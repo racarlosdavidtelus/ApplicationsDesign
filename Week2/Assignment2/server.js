@@ -40,7 +40,7 @@ const server = http.createServer((req, res) => {
         memory.push(songObj)
         //console.log(songObj);
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ message: `Se a agregado la cancion ${songObj.name} con el id ${songObj.id}` }));
+        res.end(JSON.stringify({ message: `Agregada la cancion ${songObj.name} con el id ${songObj.id}` }));
       });
     } catch (error) {
       res.writeHead(404, { "Content-Type": "application/json" });
@@ -86,14 +86,7 @@ const server = http.createServer((req, res) => {
           res.writeHead(404, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ message: `No existe ninguna cancion con el id ${id}` }));
         }
-        //memory.push(songObj)
-        //res.end('{songObj.id}')
       });
-
-      ////
-        
-        
-        
     } catch (error) {
         res.writeHead(404, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ message: error }));
