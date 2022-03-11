@@ -7,12 +7,9 @@ const contentful = require("contentful");
 const contentfulmanagment = require('contentful-management')
 
 const client = contentful.createClient({
-  // This is the space ID. A space is like a project folder in Contentful terms
   space: credentials.SPACE_ID,
-  // This is the access token for this space. Normally you get both ID and the token in the Contentful web app
   accessToken: credentials.TOKEN_CONTENT_DELIVERY
 });
-
 
 const clientmanagment = contentfulmanagment.createClient({
   accessToken: credentials.TOKEN_CONTENT_MANAGEMENT
@@ -32,17 +29,15 @@ function App() {
       setEntries(result)
     })
     .catch(err => console.log(err));
-    
   }
-
 
   useEffect(() => {
     getAllPost()
   },[]);
 
   const addNewEntry = (entry) => {
-    const newEntries = [...entries, entry]
-    setEntries(newEntries)
+    //const newEntries = [...entries, entry]
+    //setEntries(newEntries)
     clientmanagment.getSpace(credentials.SPACE_ID)
     .then((space) => space.getEnvironment('master'))
     .then((environment) => environment.createEntry('post',{
@@ -62,7 +57,6 @@ function App() {
     .then((entry) => {
       console.log(entry)
       getAllPost()
-      //window.location.reload(false);
     })
     .catch(console.error)
     

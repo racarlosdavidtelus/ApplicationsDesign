@@ -20,7 +20,7 @@ function EntryFormComponent({ postNewEntry }) {
                 <textarea value={content} onChange={(e) => setContent(e.target.value)}/>
             </div>
 
-            <button onClick={() => postNewEntry({ title, author, content })}>Post Entry!!!</button>
+            <button onClick={() => {postNewEntry({ title, author, content }); setTitle(''); setAuthor(''); setContent(''); }}>Post Entry!!!</button>
         </div>
     )
 }
