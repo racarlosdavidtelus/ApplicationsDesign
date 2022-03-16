@@ -24,17 +24,43 @@ router.post('/signup', function(req, res) {
                     }
                 });
               console.log("Nuevo Usuario agregado a la BASE DE DATOS")
-              res.status(200).json({mes:'nuevo usuario'});
+              res.status(201).json({msj:'User Created'});
             }else{
-              res.status(200).json({mes:'correo existe'}); 
+              res.status(409).json({msj:'The email already exists in the database'}); 
             }
           });
-    } catch (error) {
-        console.log(error);
-        res.status(200).json({msj:"error"});
+    } catch (er) {
+        //console.log(error);
+        res.status(500).json({msj:"error",error:er});
     }
-   
-    //res.status(200).send("Server Pokedex - Up and Running");
+});
+
+router.put('/update', function(req, res) {
+    //console.log(req.body)
+    const {name,password,pokemon_trainer_nickname,region_of_origin
+        ,gender,age,email,trainer_class}=req.body;
+    try {// INSERCION DE NUEVO USUARIO EN LA BASE DE DATOS
+        // verificando correo 
+        pool.query("SELECT * FROM user WHERE email=? ;", [email], function(err,result){
+            if (err) throw err;
+            if (result.length != 0) { 
+                //actualizo el registro en db
+                var sql = "UPDATE user SET name=?,password=?,pokemon_trainer_nickname=?,region_of_origin=?,gender=?,age=?,email=?,trainer_class=?;";
+                pool.query(sql, [name,password,pokemon_trainer_nickname,region_of_origin,gender,age,email,trainer_class], function(err,result){
+                    if (err) throw err;
+                    if(result.length != 0){
+                        res.status(204).json({msj: 'User info updated'});
+                    }
+                });
+              
+            }else{
+              res.status(409).json({msj: 'The user dont exists in the database'}); 
+            }
+          });
+    } catch (er) {
+        //console.log(er);
+        res.status(500).json({msj: 'error when update user info',error: er});
+    }
 });
 
 router.post('/login', function(req, res) {
@@ -67,9 +93,39 @@ router.post('/login', function(req, res) {
                 res.status(404).json({msj:'User not found in database'}); 
             }
         });
-    } catch (error) {
-        console.log(error);
-        res.status(404).json({msj:'User not found in database'});
+    } catch (er) {
+        //console.log(er);
+        res.status(404).json({msj:'User not found in database',error:er});
+    }
+});
+
+router.post('/addPokemon', function(req, res) {
+    console.log(req.body)
+    const {pokemon_id, name, types, url_photo, id_user}=req.body;
+    try {// INSERCION DE NUEVO POKEMON EN LA BASE DE DATOS
+        const sql = "INSERT INTO pokemon (pokemon_id, name, types, url_photo ,id_user) VALUES(?,?,?,?,?);";
+        pool.query(sql, [pokemon_id, name, types, url_photo ,id_user], function(err,result){
+            if (err) throw err;
+            if(result.length != 0){
+                id_usuario=result.insertId;
+                res.status(201).json({msj:'Pokemon hunted'});
+            }
+        });
+        // verificando correo 
+        /*
+        pool.query("SELECT * FROM user WHERE email=? ;", [email], function(err,result){
+            if (err) throw err;
+            if (result.length == 0) {
+              console.log("Nuevo Usuario agregado a la BASE DE DATOS")
+              res.status(201).json({msj:'User Created'});
+            }else{
+              res.status(409).json({msj:'The email already exists in the database'}); 
+            }
+        });
+        */
+    } catch (er) {
+        //console.log(error);
+        res.status(500).json({msj:"error",error:er});
     }
 });
 

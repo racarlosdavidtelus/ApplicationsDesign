@@ -1,5 +1,20 @@
 # Comandos
 
+## POKEAPI APUNTES
+```sh
+url_base = https://pokeapi.co/api/v2/pokemon?offset=0&limit=1126
+me devuelve todos los pokemones pero solo hay que consultar hasta el 898 porque la otra
+data esta de mas o algo asi 
+url_base = https://pokeapi.co/api/v2/pokemon?offset=0&limit=898
+
+cuando hago el fetch a cada pokemon obtengo un json con mucha data pero necesito:
+
+la imagen esta en: sprites.other.dream_dream_world.front_default 
+tipo de pokemon : types //es un array
+
+
+```
+
 ## frontend
 ```sh
 npx create-react-app pokedex
