@@ -1,11 +1,11 @@
 var mysql = require('mysql');
-require('dotenv').config()
+const credentials = require('../config/config');
 
 var mysqlConnection = mysql.createPool({
-    host     : `${process.env.MYSQL_HOST}`,
-    user     : `${process.env.MYSQL_USER}`,
-    password : `${process.env.MYSQL_PASSWORD}`,
-    database : `${process.env.MYSQL_DATABASE}` 
+    host     : credentials.mysql.host, 
+    user     : credentials.mysql.user,
+    password : credentials.mysql.password,
+    database : credentials.mysql.database
 });
 
 mysqlConnection.getConnection(function (err){
