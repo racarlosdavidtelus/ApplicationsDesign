@@ -1,4 +1,4 @@
-function EntryComponent({ idPokemon, name, types ,url_photo}) {
+function EntryComponent({ idPokemon, name, moves, types ,url_photo}) {
     return (
         <div style={{ border: 'solid', marginTop: "10px", marginBottom: "10px" }}>
             <h1>{idPokemon}</h1>
@@ -7,6 +7,13 @@ function EntryComponent({ idPokemon, name, types ,url_photo}) {
                 {
                 types.map((element,index) => (
                     <p key={index}>{element.type.name}</p>
+                ))
+                }
+            </div>
+            <div>
+                {
+                moves.map((element,index) => (
+                    <p key={index}>{element.move.name}</p>
                 ))
                 }
             </div>

@@ -20,6 +20,9 @@ tipo de pokemon : types //es un array
 npx create-react-app pokedex
 cd pokedex
 npm start
+
+npm install react-toastify
+npm i react-router-dom
 ```
 
 ## backend
@@ -27,7 +30,7 @@ npm start
 mkdir backend
 cd backend
 npm init -y
-npm install express mysql cors morgan dotenv nodemon
+npm install express mysql mongodb cors morgan dotenv nodemon
 touch index.js
 node index.js
 

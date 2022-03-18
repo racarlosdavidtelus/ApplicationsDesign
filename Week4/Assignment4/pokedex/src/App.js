@@ -1,6 +1,13 @@
 import { useState, useEffect } from 'react'
-import CartComponent from './CartComponent/CartComponent';
+import { Route, Switch } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+//import CartComponent from './CartComponent/CartComponent';
 import './App.css';
+import Signup from './SignupComponent/SignupComponent';
+import Login from './LoginComponent/LoginComponent';
+import Navbar from './NavbarComponent/NavbarComponent';
+import Dashboard from './Dashboard/DashboardComponent';
 
 function App() {
   const [pokemons, setPokemons] = useState([])
@@ -28,6 +35,7 @@ function App() {
               const poke = {
                 idPokemon: index+1,
                 name: pokemon.name,
+                moves: data.moves,
                 types: data.types,
                 url_photo: data.sprites.other.home.front_default
               }
@@ -52,14 +60,18 @@ function App() {
   },[]);
 
   return (
-      <div>
-        {
-          pokemons.map((pokemon, index) => (
-            <CartComponent key={index} idPokemon={pokemon.idPokemon} name={pokemon.name} types={pokemon.types} url_photo={pokemon.url_photo} />
-          ))
-        }
-      </div>
-  )
+    <>
+    <Navbar></Navbar>
+      <Switch>
+        {/* OUT */}
+        <Route exact path="/signup" component={Signup} />
+        <Route exact path="/login" component={Login} />
+        {/* IN */}
+        <Route exact path="/dashboard" render={() => (<Dashboard pokemons={pokemons} />)} />
+      </Switch>
+      <ToastContainer autoClose={1500} hideProgressBar />
+    </>
+  );
 }
 
 export default App;
