@@ -1,5 +1,12 @@
-
+import { useHistory } from "react-router-dom";
 const Navbar = () => {
+
+    const history = useHistory();
+
+    const onProfile = (event) => {
+        event.preventDefault();
+        history.replace("/profile")
+    }
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -14,6 +21,10 @@ const Navbar = () => {
             </li>
             <li className="nav-item">
                 <a className="nav-link" href="/signup">Signup</a>
+            </li>
+            <li className="nav-item">
+            <button className="btn btn-primary" onClick={onProfile}>Profile</button>
+                
             </li>
            
             </ul>

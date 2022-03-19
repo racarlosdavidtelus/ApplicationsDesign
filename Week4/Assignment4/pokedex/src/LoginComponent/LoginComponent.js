@@ -1,10 +1,13 @@
 //import { useState, useEffect } from 'react'
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useContext } from "react";
 import { toast } from 'react-toastify'
 import { useHistory } from "react-router-dom";
 import config from '../config/config';
+import { useUser, useUserUpdate } from "../context/UserContext"; 
 
 const Login = () => {
+    //const context_user = useUser()
+    const context_userUpdate = useUserUpdate()
 
     const [data, setData] = useState({
         user: '',
@@ -34,13 +37,14 @@ const Login = () => {
         })
         .then(data => {
             if (data.error == null) {
+                context_userUpdate(data.msj)
                 setData({
                     user: '',
                     password: '',
                 })
                 toast.success(`Welcome ${data.msj.name}`, {
                     onClose: () => {
-                        history.replace("/dashboard")
+                        history.replace("/profile")
                     }
                 })
             }else{

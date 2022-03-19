@@ -30,7 +30,7 @@ npm i react-router-dom
 mkdir backend
 cd backend
 npm init -y
-npm install express mysql mongodb cors morgan dotenv nodemon
+npm install express mysql mongodb cors morgan dotenv nodemon aws-sdk
 touch index.js
 node index.js
 

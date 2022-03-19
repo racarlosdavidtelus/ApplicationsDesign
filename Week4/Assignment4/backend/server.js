@@ -7,7 +7,7 @@ var cors = require('cors');
 const port = 2000;
 
 //Middlewares
-app.use(express.json());
+app.use(express.json({ limit: '50mb', extended: true }));
 app.use(morgan('dev'));
 //app.use(cors());
 

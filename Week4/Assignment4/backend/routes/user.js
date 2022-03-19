@@ -3,22 +3,26 @@ var router = express.Router();
 const pool = require('../databases_connections/mysql_connection');
 const mongoConnection = require('../databases_connections/mongo_connection');
 
+//AWS S3
+const aws_keys = require('../config/config');
+var AWS = require('aws-sdk');
+const s3 = new AWS.S3(aws_keys.s3);
+
 router.post('/signup', function(req, res) {
     console.log(req.body)
-    const url_photo = "https://aws.com"
     const {name,password,pokemon_trainer_nickname,region_of_origin
-        ,gender,age,email,trainer_class}=req.body;
+        ,gender,age,email,trainer_class,profile_photo}=req.body;
     try {// INSERCION DE NUEVO USUARIO EN LA BASE DE DATOS
         // verificando correo 
         pool.query("SELECT * FROM user WHERE email=? ;", [email], function(err,result){
             if (err) throw err;
             if (result.length == 0) {
-                //guardarEnS3(nombreUsuario,miFile,nombreFile)
-                //let path = 'https://archivos-22pareja-p1.s3.us-east-2.amazonaws.com/'+nombreUsuario+"/"+nombreFile;
+                guardarEnS3(name,profile_photo,profile_photo.name)
+                let path = 'https://project-pokedex.s3.us-east-2.amazonaws.com/'+name+"/"+profile_photo.name;
                 //inserto en db
                 let id_usuario;
                 var sql = "INSERT INTO user (name,password,pokemon_trainer_nickname,region_of_origin,gender,age,email,trainer_class,url_photo) VALUES(?,?,?,?,?,?,?,?,?);";
-                pool.query(sql, [name,password,pokemon_trainer_nickname,region_of_origin,gender,age,email,trainer_class,url_photo], function(err,result){
+                pool.query(sql, [name,password,pokemon_trainer_nickname,region_of_origin,gender,age,email,trainer_class,path], function(err,result){
                     if (err) throw err;
                     if(result.length != 0){
                         id_usuario=result.insertId;
@@ -37,23 +41,24 @@ router.post('/signup', function(req, res) {
 });
 
 router.put('/update', function(req, res) {
-    //console.log(req.body)
-    const {name,password,pokemon_trainer_nickname,region_of_origin
-        ,gender,age,email,trainer_class}=req.body;
+    console.log(req.body)
+    const {id,name,password,pokemon_trainer_nickname,region_of_origin
+        ,gender,age,email,trainer_class,url_photo}=req.body;
     try {// INSERCION DE NUEVO USUARIO EN LA BASE DE DATOS
-        // verificando correo 
-        pool.query("SELECT * FROM user WHERE email=? ;", [email], function(err,result){
+        // verificando si existe el usuario con el id
+        pool.query("SELECT * FROM user WHERE id=? ;", [id], function(err,result){
             if (err) throw err;
             if (result.length != 0) { 
                 //actualizo el registro en db
-                var sql = "UPDATE user SET name=?,password=?,pokemon_trainer_nickname=?,region_of_origin=?,gender=?,age=?,email=?,trainer_class=?;";
-                pool.query(sql, [name,password,pokemon_trainer_nickname,region_of_origin,gender,age,email,trainer_class], function(err,result){
+                var sql = "UPDATE user SET name=?,password=?,pokemon_trainer_nickname=?,region_of_origin=?,gender=?,age=?,email=?,trainer_class=? WHERE id=? ;";
+                pool.query(sql, [name,password,pokemon_trainer_nickname,region_of_origin,gender,age,email,trainer_class,id], function(err,result){
                     if (err) throw err;
-                    if(result.length != 0){
-                        res.status(204).json({msj: 'User info updated', error: null});
+                    if(result.length != 0){ 
+                        
                     }
                 });
-              
+                console.log("Usuario actualizado en la BASE DE DATOS")
+                res.status(201).json({msj: 'User info updated',error: null});
             }else{
               res.status(409).json({msj: 'The user dont exists in the database', error: true}); 
             }
@@ -170,8 +175,30 @@ router.get('/mongo', async function(req, res) {
     } finally {
       await mongoConnection.close();
     }
-  });
+});
 
+async function guardarEnS3(nombreUsuario,miFile,nombreFile){
+    //obteniendo la base64 sin el inicio, quita esto (no importa el tipo archivo): data:image/png;base64, 
+    let inicio = miFile.base.indexOf(',')+1;
+    let fin = miFile.base.length;
+    const newBase64 = await miFile.base.substring(inicio,fin);
+
+    //convirtiendo a base64
+    let buff = await new Buffer.from(newBase64, 'base64');
+    //parametros para s3 
+    const params = {
+      Bucket: 'project-pokedex',
+      Key: nombreUsuario+"/"+nombreFile,
+      Body: buff,
+      //ContentEncoding: 'base64',
+      //ContentType: "image/png",
+      ACL: 'public-read'
+    };
+  
+    //verificando si existe archivo, en una carpeta con el mismo nombre y extension
+    //inserto en s3
+    let putResult = await s3.putObject(params).promise();
+  }
 /*
 router.post('/addPokemon', function(req, res) {
     console.log(req.body)
