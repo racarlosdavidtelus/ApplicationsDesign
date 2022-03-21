@@ -149,8 +149,12 @@ router.get('/getPokemons/userid/:userId', async function(req, res) {
         }
         // replace console.dir with your callback to access individual elements
         //await cursor.forEach(console.dir);
-    } finally {
+    } catch (er) {
+        //console.log(error);
+        res.status(500).json({msj:"error", error:er});
+    }finally {
         await mongoConnection.close();
+        console.log("closing mongoconnection")
     }
 });
 
@@ -178,27 +182,34 @@ router.get('/mongo', async function(req, res) {
 });
 
 async function guardarEnS3(nombreUsuario,miFile,nombreFile){
-    //obteniendo la base64 sin el inicio, quita esto (no importa el tipo archivo): data:image/png;base64, 
-    let inicio = miFile.base.indexOf(',')+1;
-    let fin = miFile.base.length;
-    const newBase64 = await miFile.base.substring(inicio,fin);
+    try {
+        //obteniendo la base64 sin el inicio, quita esto (no importa el tipo archivo): data:image/png;base64, 
+        let inicio = miFile.base.indexOf(',')+1;
+        let fin = miFile.base.length;
+        const newBase64 = await miFile.base.substring(inicio,fin);
 
-    //convirtiendo a base64
-    let buff = await new Buffer.from(newBase64, 'base64');
-    //parametros para s3 
-    const params = {
-      Bucket: 'project-pokedex',
-      Key: nombreUsuario+"/"+nombreFile,
-      Body: buff,
-      //ContentEncoding: 'base64',
-      //ContentType: "image/png",
-      ACL: 'public-read'
-    };
-  
-    //verificando si existe archivo, en una carpeta con el mismo nombre y extension
-    //inserto en s3
-    let putResult = await s3.putObject(params).promise();
-  }
+        //convirtiendo a base64
+        let buff = await new Buffer.from(newBase64, 'base64');
+        //parametros para s3 
+        const params = {
+        Bucket: 'project-pokedex',
+        Key: nombreUsuario+"/"+nombreFile,
+        Body: buff,
+        //ContentEncoding: 'base64',
+        //ContentType: "image/png",
+        ACL: 'public-read'
+        };
+    
+        //verificando si existe archivo, en una carpeta con el mismo nombre y extension
+        //inserto en s3
+        let putResult = await s3.putObject(params).promise();
+        return true;
+    } catch (error) {
+        console.log(error)
+        return false;
+    }
+
+}
 /*
 router.post('/addPokemon', function(req, res) {
     console.log(req.body)

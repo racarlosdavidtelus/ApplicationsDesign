@@ -1,9 +1,10 @@
 //import { useState, useEffect } from 'react'
-import React, { Fragment, useState, useContext } from "react";
+import React, { Fragment, useState } from "react";
 import { toast } from 'react-toastify'
 import { useHistory } from "react-router-dom";
 import config from '../config/config';
-import { useUser, useUserUpdate } from "../context/UserContext"; 
+import { useUserUpdate } from "../context/UserContext"; 
+import Navbar from './Navbar';
 
 const Login = () => {
     //const context_user = useUser()
@@ -58,27 +59,30 @@ const Login = () => {
 
     return (
         <Fragment>
+            <Navbar></Navbar>
+            <br></br>
             <div className="d-flex justify-content-center">
-            <div className="card w-75">
-            <main className="container">
+            <div className="form-group col-md-6">
+           
                 <h1>Login</h1>
                 <form onSubmit={save}>
-                    <input type="hidden" name="codigo" id="codigo" onChange={handleInputChange}></input>
-                    <div className="mb-3">
+                    
+                    <div className="form-group col-md-8">
                         <label htmlFor="user" className="form-label">User</label>
                         <input type="text" name="user" id="user" onChange={handleInputChange} className="form-control" value={data.user}></input>
                     </div>
 
-                    <div className="mb-3">
+                    <div className="form-group col-md-8">
                         <label htmlFor="password" className="form-label">Password</label>
                         <input type="password" name="password" id="password" onChange={handleInputChange} className="form-control" value={data.password}></input>
                     </div>
-                   
+                   <br></br>
                     <div className="mb-3">
                         <button type="submit" className="btn btn-primary">Login</button>
                     </div>
+                 
                 </form>
-            </main>
+          
             </div>
             </div>
             

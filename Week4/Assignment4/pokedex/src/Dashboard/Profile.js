@@ -3,18 +3,18 @@ import React, { useEffect, useState } from "react";
 import { toast } from 'react-toastify'
 import { useHistory } from "react-router-dom";
 import config from '../config/config';
-import { useUser, useUserUpdate } from "../context/UserContext"; 
+import { useUser } from "../context/UserContext"; 
+import NavbarDashboard from './NavbarDashboard';
 
 const Profile = () => {
     const context_user = useUser()
-    const context_userUpdate = useUserUpdate()
 
     const [data, setData] = useState(context_user)
 
     useEffect(()=>{
         setData(context_user)
         console.log(context_user)
-    },[])
+    },[context_user])
 
     const history = useHistory();
 
@@ -58,6 +58,8 @@ const Profile = () => {
 
     return (
         <>
+            <NavbarDashboard></NavbarDashboard>
+            <br></br>
             <div className="d-flex justify-content-center">
             <div className="card w-75">
             <main className="container">

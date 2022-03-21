@@ -4,12 +4,13 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 //import CartComponent from './CartComponent/CartComponent';
 import './App.css';
-import Signup from './SignupComponent/SignupComponent';
-import Login from './LoginComponent/LoginComponent';
-import Navbar from './NavbarComponent/NavbarComponent';
-import Dashboard from './Dashboard/DashboardComponent';
+import Home from './Home/Home';
+import Signup from './Home/Signup';
+import Login from './Home/Login';
+import Dashboard from './Dashboard/Dashboard';
 import Profile from './Dashboard/Profile';
 import { UserProvider } from './context/UserContext';
+import UserPokemons from './Dashboard/UserPokemons';
 
 function App() {
   const [pokemons, setPokemons] = useState([])
@@ -64,14 +65,15 @@ function App() {
   return (
     <>
     <UserProvider>
-      <Navbar></Navbar>
         <Switch>
           {/* OUT */}
+          <Route exact path="/" component={Home} />
           <Route exact path="/signup" component={Signup} />
           <Route exact path="/login" component={Login} />
           {/* IN */}
           <Route exact path="/dashboard" render={() => (<Dashboard pokemons={pokemons} />)} />
           <Route exact path="/profile" component={Profile} />
+          <Route exact path="/mypokemons" component={UserPokemons} />
         </Switch>
         <ToastContainer autoClose={1500} hideProgressBar />
     </UserProvider>
